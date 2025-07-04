@@ -216,9 +216,9 @@ hr {
 st.title("⚖️ Legal Document Simplifier")
 
 if not GROQ_API_KEY or "gsk_" not in GROQ_API_KEY:
-    st.warning("⚠️ Invalid or missing GROQ_API_KEY. AI simplification will not work.")
+    st.warning("Invalid or missing GROQ_API_KEY. AI simplification will not work.")
 if not GOOGLE_API_KEY or not GOOGLE_CSE_ID:
-    st.warning("⚠️ Missing GOOGLE_API_KEY or GOOGLE_CSE_ID. Advisor search will not work.")
+    st.warning("Missing GOOGLE_API_KEY or GOOGLE_CSE_ID. Advisor search will not work.")
 
 client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 search_service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY) if GOOGLE_API_KEY else None
@@ -268,7 +268,7 @@ Answer:"""
                 {"role": "system", "content": "You are a helpful legal assistant who answers questions based strictly on the provided document content."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.3,  # Lower temperature for more focused answers
+            temperature=0.3,  
             max_tokens=1200
         )
         return response.choices[0].message.content.strip()
@@ -380,7 +380,7 @@ Please:
     # Q&A Section - only show if document has been processed
     if st.session_state.document_processed and st.session_state.document_text:
         st.markdown("---")
-        st.subheader("🤖 Ask Questions About Your Document")
+        st.subheader("Ask Questions About Your Document")
         st.write("You can now ask specific questions about the document you uploaded or pasted.")
         
         # Question input
@@ -401,8 +401,8 @@ Please:
             # Display Q&A in a styled format
             st.markdown(f"""
             <div class="qa-section">
-                <div class="question">❓ {user_question}</div>
-                <div class="answer">💡 {answer}</div>
+                <div class="question">{user_question}</div>
+                <div class="answer">{answer}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -410,7 +410,7 @@ Please:
             st.error("Please enter a question before clicking 'Ask Question'.")
         
         # Common question suggestions
-        st.markdown("**💡 Suggested Questions:**")
+        st.markdown("**Suggested Questions:**")
         suggested_questions = [
             "What are the main parties involved in this document?",
             "What are the key terms and conditions?",
@@ -436,7 +436,7 @@ Please:
                     """, unsafe_allow_html=True)
 
     elif not st.session_state.document_processed:
-        st.info("📄 Upload a document and click 'Simplify & Recommend Advisor' first to enable the Q&A feature.")
+        st.info("Upload a document and click 'Simplify & Recommend Advisor' first to enable the Q&A feature.")
 
 if __name__ == "__main__":
     main()
