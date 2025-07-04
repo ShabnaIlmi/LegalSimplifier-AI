@@ -20,7 +20,7 @@ GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 # Page configuration with custom theme
 st.set_page_config(
     page_title="Legal Document Simplifier", 
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed",
     page_icon="⚖️"
 )
@@ -39,11 +39,11 @@ st.markdown("""
     
     /* Header styling */
     .main-header {
-        background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
         padding: 2rem;
         border-radius: 15px;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
     }
     
     .main-title {
@@ -56,7 +56,7 @@ st.markdown("""
     }
     
     .main-subtitle {
-        color: #e2e8f0;
+        color: #f1f5f9;
         font-size: 1.1rem;
         text-align: center;
         margin-top: 0.5rem;
@@ -110,7 +110,7 @@ st.markdown("""
     
     /* Button styling */
     .stButton > button {
-        background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
         color: white;
         border: none;
         padding: 0.75rem 2rem;
@@ -118,14 +118,14 @@ st.markdown("""
         font-weight: 600;
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         width: 100%;
     }
     
     .stButton > button:hover {
-        background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+        background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
     }
     
     /* File uploader styling */
@@ -171,7 +171,7 @@ st.markdown("""
     }
     
     .advisor-title {
-        color: #1e40af;
+        color: #2563eb;
         font-weight: 600;
         font-size: 1.1rem;
         margin-bottom: 0.5rem;
@@ -184,7 +184,7 @@ st.markdown("""
     
     /* Spinner styling */
     .stSpinner {
-        color: #1e40af;
+        color: #2563eb;
     }
     
     /* Hide Streamlit elements */
@@ -323,8 +323,10 @@ Please:
             with st.spinner("🤖 Analyzing legal document with AI..."):
                 simplified = call_llama_groq(prompt)
 
+            # Use wider container for output
             st.markdown('<div class="section-header">📝 Simplified Summary</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="success-box">{simplified}</div>', unsafe_allow_html=True)
+            with st.container():
+                st.markdown(f'<div class="success-box">{simplified}</div>', unsafe_allow_html=True)
 
             st.markdown('<div class="section-header">👨‍💼 Recommended Legal Advisors</div>', unsafe_allow_html=True)
             query = "legal advisor near me for contract law"
@@ -332,7 +334,8 @@ Please:
                 results = google_search(query, num=5)
 
             if results:
-                for item in results:
+                # Create columns for advisor cards
+                for i, item in enumerate(results):
                     title = item.get("title", "Unknown Title")
                     snippet = item.get("snippet", "No description available")
                     link = item.get("link", "#")
@@ -340,7 +343,7 @@ Please:
                     st.markdown(f"""
                     <div class="advisor-card">
                         <div class="advisor-title">
-                            <a href="{link}" target="_blank" style="text-decoration: none; color: #1e40af;">
+                            <a href="{link}" target="_blank" style="text-decoration: none; color: #2563eb;">
                                 🏛️ {title}
                             </a>
                         </div>
