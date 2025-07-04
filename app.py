@@ -214,9 +214,9 @@ st.markdown("""
 
 # Validating the API keys and show warnings (don't stop to help debugging)
 if not GROQ_API_KEY or "gsk_" not in GROQ_API_KEY:
-    st.markdown('<div class="warning-box">⚠️ Invalid or missing GROQ_API_KEY. AI simplification will not work.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="warning-box">Invalid or missing GROQ_API_KEY. AI simplification will not work.</div>', unsafe_allow_html=True)
 if not GOOGLE_API_KEY or not GOOGLE_CSE_ID:
-    st.markdown('<div class="warning-box">⚠️ Missing GOOGLE_API_KEY or GOOGLE_CSE_ID. Advisor search will not work.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="warning-box">Missing GOOGLE_API_KEY or GOOGLE_CSE_ID. Advisor search will not work.</div>', unsafe_allow_html=True)
 
 # Initializing the clients only if keys present
 client = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
@@ -255,7 +255,7 @@ def extract_text_from_pdf(uploaded_file):
         ocr_text = "\n".join(pytesseract.image_to_string(img) for img in images)
         return ocr_text
     except Exception as e:
-        st.markdown(f'<div class="error-box">❌ OCR failed: {e}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="error-box">OCR failed: {e}</div>', unsafe_allow_html=True)
         return ""
 
 def google_search(query, num=5):
@@ -265,29 +265,29 @@ def google_search(query, num=5):
         result = search_service.cse().list(q=query, cx=GOOGLE_CSE_ID, num=num).execute()
         return result.get("items", [])
     except Exception as e:
-        st.markdown(f'<div class="error-box">❌ Google Search API error: {e}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="error-box">Google Search API error: {e}</div>', unsafe_allow_html=True)
         return []
 
 def main():
-    st.markdown("📄 Upload a legal PDF document or paste legal text below, then click the button to get started.")
+    st.markdown("Upload a legal PDF document or paste legal text below, then click the button to get started.")
     
     # Create two columns for better layout
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        st.markdown('<div class="section-header">📁 Upload Document</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Upload Document</div>', unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Choose a PDF file", type=["pdf"], help="Upload your legal document in PDF format")
     
     with col2:
-        st.markdown('<div class="section-header">✍️ Or Enter Text</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Or Enter Text</div>', unsafe_allow_html=True)
         text_input = st.text_area("Paste your legal text here:", height=150, help="Copy and paste legal text directly")
 
     # Center the button
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("🚀 Simplify & Recommend Advisor"):
+        if st.button("Simplify & Recommend Advisor"):
             if not uploaded_file and not text_input.strip():
-                st.markdown('<div class="error-box">❌ Please upload a document or enter some text to proceed.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="error-box">Please upload a document or enter some text to proceed.</div>', unsafe_allow_html=True)
                 return
 
             # Extracting text from PDF or use input text
@@ -295,16 +295,16 @@ def main():
             source = ""
             if uploaded_file:
                 source = "PDF document"
-                with st.spinner("📖 Extracting text from PDF..."):
+                with st.spinner("Extracting text from PDF..."):
                     raw_text = extract_text_from_pdf(uploaded_file)
                 if not raw_text.strip():
-                    st.markdown('<div class="error-box">❌ Failed to extract any text from the PDF.</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="error-box">Failed to extract any text from the PDF.</div>', unsafe_allow_html=True)
                     return
             else:
                 source = "text input"
                 raw_text = text_input.strip()
 
-            st.markdown('<div class="section-header">📋 Original Input Preview</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">Original Input Preview</div>', unsafe_allow_html=True)
             st.code(raw_text[:500] + ("..." if len(raw_text) > 500 else ""), language="text")
 
             prompt = f"""
@@ -320,17 +320,17 @@ Please:
 3. Suggest next steps and legal considerations, in a professional tone.
 """
 
-            with st.spinner("🤖 Analyzing legal document with AI..."):
+            with st.spinner("Analyzing legal document with AI..."):
                 simplified = call_llama_groq(prompt)
 
             # Use wider container for output
-            st.markdown('<div class="section-header">📝 Simplified Summary</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">Simplified Summary</div>', unsafe_allow_html=True)
             with st.container():
                 st.markdown(f'<div class="success-box">{simplified}</div>', unsafe_allow_html=True)
 
-            st.markdown('<div class="section-header">👨‍💼 Recommended Legal Advisors</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">Recommended Legal Advisors</div>', unsafe_allow_html=True)
             query = "legal advisor near me for contract law"
-            with st.spinner("🔍 Searching for legal advisors..."):
+            with st.spinner("Searching for legal advisors..."):
                 results = google_search(query, num=5)
 
             if results:
@@ -351,7 +351,7 @@ Please:
                     </div>
                     """, unsafe_allow_html=True)
             else:
-                st.markdown('<div class="warning-box">⚠️ No legal advisors found or Google API keys missing.</div>', unsafe_allow_html=True)
+                st.markdown('<div class="warning-box">No legal advisors found or Google API keys missing.</div>', unsafe_allow_html=True)
 
     # Footer
     st.markdown("---")
