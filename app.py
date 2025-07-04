@@ -41,6 +41,22 @@ h1 {
 .stButton > button:hover {
     background-color: #1d4ed8;
 }
+.qa-section {
+    background-color: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #2563eb;
+    margin: 1rem 0;
+}
+.question {
+    font-weight: 600;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+}
+.answer {
+    color: #374151;
+    line-height: 1.6;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -56,7 +72,7 @@ search_service = build("customsearch", "v1", developerKey=GOOGLE_API_KEY) if GOO
 
 def call_llama_groq(prompt):
     if not client:
-        return "GROQ API key missing, cannot simplify document."
+        return "GROQ API key missing, cannot process request."
     try:
         response = client.chat.completions.create(
             model="llama3-70b-8192",
@@ -70,6 +86,41 @@ def call_llama_groq(prompt):
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"Error calling GROQ API: {e}"
+
+def answer_question_about_document(question, document_text):
+    """
+    Answer a specific question about the given document using AI
+    """
+    if not client:
+        return "GROQ API key missing, cannot answer questions."
+    
+    prompt = f"""
+You are a legal assistant helping to answer questions about a specific legal document.
+
+Here is the document content:
+=== DOCUMENT START ===
+{document_text}
+=== DOCUMENT END ===
+
+Question: {question}
+
+Please provide a clear, accurate answer based solely on the information in the document above. If the document doesn't contain enough information to answer the question, please say so. Be specific and cite relevant sections when possible.
+
+Answer:"""
+
+    try:
+        response = client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=[
+                {"role": "system", "content": "You are a helpful legal assistant who answers questions based strictly on the provided document content."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,  # Lower temperature for more focused answers
+            max_tokens=1200
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error answering question: {e}"
 
 def extract_text_from_pdf(uploaded_file):
     try:
@@ -109,6 +160,12 @@ def main():
     with col2:
         text_input = st.text_area("Paste Legal Text Here", height=150)
 
+    # Initialize session state for document text
+    if 'document_text' not in st.session_state:
+        st.session_state.document_text = ""
+    if 'document_processed' not in st.session_state:
+        st.session_state.document_processed = False
+
     if st.button("Simplify & Recommend Advisor"):
         if not uploaded_file and not text_input.strip():
             st.error("Please upload a PDF or enter legal text to continue.")
@@ -126,6 +183,10 @@ def main():
         else:
             source = "text input"
             raw_text = text_input.strip()
+
+        # Store document text in session state
+        st.session_state.document_text = raw_text
+        st.session_state.document_processed = True
 
         st.subheader("Original Input Preview")
         st.code(raw_text[:700] + ("..." if len(raw_text) > 700 else ""), language="text")
@@ -162,6 +223,67 @@ Please:
                 st.markdown(f"**[{title}]({link})**  \n{snippet}")
         else:
             st.info("No legal advisors found or missing Google API keys.")
+
+    # Q&A Section - only show if document has been processed
+    if st.session_state.document_processed and st.session_state.document_text:
+        st.markdown("---")
+        st.subheader("🤖 Ask Questions About Your Document")
+        st.write("You can now ask specific questions about the document you uploaded or pasted.")
+        
+        # Question input
+        user_question = st.text_input(
+            "Enter your question about the document:",
+            placeholder="e.g., What are the key obligations mentioned in this contract?",
+            key="question_input"
+        )
+        
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            ask_button = st.button("Ask Question", key="ask_btn")
+        
+        if ask_button and user_question.strip():
+            with st.spinner("Analyzing document to answer your question..."):
+                answer = answer_question_about_document(user_question, st.session_state.document_text)
+            
+            # Display Q&A in a styled format
+            st.markdown(f"""
+            <div class="qa-section">
+                <div class="question">❓ {user_question}</div>
+                <div class="answer">💡 {answer}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        elif ask_button and not user_question.strip():
+            st.error("Please enter a question before clicking 'Ask Question'.")
+        
+        # Common question suggestions
+        st.markdown("**💡 Suggested Questions:**")
+        suggested_questions = [
+            "What are the main parties involved in this document?",
+            "What are the key terms and conditions?",
+            "What are the important dates or deadlines mentioned?",
+            "What are the payment terms or financial obligations?",
+            "What happens if there's a breach of contract?",
+            "Are there any termination clauses?",
+            "What are the governing laws mentioned?"
+        ]
+        
+        cols = st.columns(2)
+        for i, question in enumerate(suggested_questions):
+            with cols[i % 2]:
+                if st.button(question, key=f"suggested_{i}"):
+                    with st.spinner("Analyzing document to answer your question..."):
+                        answer = answer_question_about_document(question, st.session_state.document_text)
+                    
+                    st.markdown(f"""
+                    <div class="qa-section">
+                        <div class="question">❓ {question}</div>
+                        <div class="answer">💡 {answer}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+    elif not st.session_state.document_processed:
+        st.info("📄 Upload a document and click 'Simplify & Recommend Advisor' first to enable the Q&A feature.")
 
 if __name__ == "__main__":
     main()
