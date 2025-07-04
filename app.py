@@ -19,43 +19,196 @@ st.set_page_config(
     page_icon="⚖️"
 )
 
-# Simple CSS for colored title and button
+# Enhanced CSS with vibrant colors and modern styling
 st.markdown("""
 <style>
+/* Main title styling */
 h1 {
-    color: #1e40af;  /* A nice blue */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
+
+/* Main app background */
+.main .block-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 1rem;
+}
+
+/* Button styling */
 .stButton > button {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     font-weight: 600;
-    padding: 0.6rem 2rem;
-    border-radius: 8px;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
     border: none;
     width: 100%;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    font-size: 1.1rem;
 }
 .stButton > button:hover {
-    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
-.qa-section {
-    background-color: #f8fafc;
+
+/* File uploader styling */
+.uploadedFile {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    border-radius: 10px;
     padding: 1rem;
-    border-radius: 8px;
-    border-left: 4px solid #2563eb;
-    margin: 1rem 0;
+    border: 2px dashed #667eea;
 }
+
+/* Text area styling */
+.stTextArea > div > div > textarea {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border: 2px solid #ff9a9e;
+    border-radius: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Q&A section styling */
+.qa-section {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    padding: 1.5rem;
+    border-radius: 15px;
+    border-left: 6px solid #667eea;
+    margin: 1rem 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+.qa-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
 .question {
-    font-weight: 600;
-    color: #1e40af;
-    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
 }
 .answer {
-    color: #374151;
-    line-height: 1.6;
+    color: #4a5568;
+    line-height: 1.7;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.7);
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid #ff9a9e;
+}
+
+/* Subheader styling */
+h2, h3 {
+    color: #667eea;
+    border-bottom: 2px solid #ff9a9e;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Info boxes */
+.stInfo {
+    background: linear-gradient(135deg, #d299c2 0%, #fef9d3 100%);
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+/* Warning boxes */
+.stWarning {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: 10px;
+    border-left: 4px solid #ff9a9e;
+}
+
+/* Error boxes */
+.stError {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    border-radius: 10px;
+    border-left: 4px solid #e17055;
+}
+
+/* Success boxes */
+.stSuccess {
+    background: linear-gradient(135deg, #b7f8db 0%, #50fa7b 100%);
+    border-radius: 10px;
+    border-left: 4px solid #00b894;
+}
+
+/* Code blocks */
+.stCodeBlock {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    border-radius: 10px;
+    border: 2px solid #667eea;
+}
+
+/* Suggested questions buttons */
+div[data-testid="column"] .stButton > button {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    color: #333;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    border: 2px solid #ff9a9e;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+div[data-testid="column"] .stButton > button:hover {
+    background: linear-gradient(135deg, #fecfef 0%, #ff9a9e 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(255, 154, 158, 0.3);
+}
+
+/* Text input styling */
+.stTextInput > div > div > input {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border: 2px solid #ff9a9e;
+    border-radius: 15px;
+    color: #333;
+    font-weight: 500;
+    padding: 0.8rem;
+}
+
+/* Spinner styling */
+.stSpinner > div {
+    border-top-color: #667eea !important;
+}
+
+/* Markdown links */
+a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Columns styling */
+div[data-testid="column"] {
+    padding: 0.5rem;
+}
+
+/* Section dividers */
+hr {
+    border: none;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    margin: 2rem 0;
 }
 </style>
 """, unsafe_allow_html=True)
