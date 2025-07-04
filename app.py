@@ -13,41 +13,42 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
-# Set Tesseract path (for Windows users, change path if needed)
+# Optional: comment out on Linux deployments or set the path properly
 # pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
 
-# Custom CSS for colors and styling
+# Inject custom CSS with proper Streamlit selectors and !important
 st.markdown(
     """
     <style>
-    /* Background color */
-    .main {
-        background-color: #f0f4f8;
-        color: #333333;
+    /* Main background */
+    .css-18e3th9 {
+        background-color: #f0f4f8 !important;
+        color: #333333 !important;
+        padding: 1rem 2rem;
     }
-    /* Title */
+    /* Page title */
     h1 {
-        color: #0a4471;
-        font-weight: 700;
+        color: #0a4471 !important;
+        font-weight: 700 !important;
     }
-    /* Headers */
+    /* Section headers */
     h2, h3 {
-        color: #064663;
+        color: #064663 !important;
     }
-    /* Button styling */
+    /* Buttons */
     div.stButton > button {
-        background-color: #0a4471;
-        color: white;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 8px 18px;
-        transition: background-color 0.3s ease;
+        background-color: #0a4471 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        padding: 8px 18px !important;
+        transition: background-color 0.3s ease !important;
     }
     div.stButton > button:hover {
-        background-color: #064663;
-        color: #e0e7ef;
+        background-color: #064663 !important;
+        color: #e0e7ef !important;
     }
-    /* Code block background */
+    /* Code block styling */
     .stCodeBlock pre {
         background-color: #e8f0fe !important;
         color: #1a237e !important;
@@ -55,9 +56,9 @@ st.markdown(
         padding: 12px !important;
         font-size: 14px !important;
     }
-    /* Info and warning boxes */
+    /* Alerts */
     .stAlert {
-        border-radius: 8px;
+        border-radius: 8px !important;
     }
     </style>
     """,
